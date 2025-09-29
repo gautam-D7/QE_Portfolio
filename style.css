@@ -139,16 +139,16 @@ h3 { color: var(--color-primary); margin-bottom: 10px; }
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    overflow: hidden; /* CRITICAL: Ensures animated avatar stays within the circle */
+    overflow: hidden; /* Ensures animated avatar stays within the circle */
     box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
 }
 
-#hero-animated-avatar { /* NEW: Styling for the animated avatar */
-    width: 100%; /* Make it fill the circular container */
+#hero-animated-avatar { 
+    width: 100%; 
     height: 100%;
-    object-fit: cover; /* Crop if necessary to fill the circle */
-    border-radius: 50%; /* Inherit from parent or re-apply */
-    display: block; /* Remove any extra space below image */
+    object-fit: cover; 
+    border-radius: 50%; 
+    display: block; 
 }
 
 
@@ -174,17 +174,8 @@ h3 { color: var(--color-primary); margin-bottom: 10px; }
     background-color: var(--color-secondary);
 }
 
-a.btn-secondary {
-    background-color: transparent;
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-    margin-top: 15px;
-}
+/* The btn-secondary rules are now removed/combined since they are no longer used */
 
-a.btn-secondary:hover {
-    background-color: var(--color-primary);
-    color: var(--color-surface);
-}
 
 /* --- Projects Section --- */
 .project-grid {
@@ -295,6 +286,76 @@ footer {
     opacity: 1;
 }
 
+/* --- Modal Window Styles for Resume Display --- */
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 3000; /* Must be higher than navbar/overlay */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%;
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.9); /* Dark semi-transparent background */
+}
+
+.modal-content {
+    background-color: var(--color-surface);
+    margin: 3% auto; /* Centered with small top margin */
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    width: 90%; 
+    height: 90vh; /* Takes up most of the viewport height */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modal-header h3 {
+    color: var(--color-text-dark);
+    margin: 0;
+}
+
+.close-btn {
+    color: var(--color-text-light);
+    float: right;
+    font-size: 36px;
+    font-weight: bold;
+    align-self: flex-start; 
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: var(--color-primary);
+}
+
+#resume-iframe {
+    flex-grow: 1; /* Makes iframe fill remaining space */
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.btn-modal-download {
+    padding: 8px 15px; /* Smaller button for header */
+}
+
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
     .hero-section {
@@ -305,7 +366,7 @@ footer {
     .hero-content { max-width: 100%; }
     .hero-image { 
         margin-top: 30px; 
-        width: 150px; /* Adjust size for mobile */
+        width: 150px; 
         height: 150px;
     }
     #hero-animated-avatar {

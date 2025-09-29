@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- THEME TOGGLE LOGIC (RETAINED) ---
+    // --- THEME TOGGLE LOGIC ---
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
@@ -35,13 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateThemeIcon(newTheme);
     });
     
-    // --- ANIMATED INTRO LOGIC (MODIFIED) ---
+    // --- ANIMATED INTRO LOGIC ---
     const overlay = document.getElementById('intro-overlay');
-    const introAvatar = document.getElementById('intro-avatar'); // NEW
+    const introAvatar = document.getElementById('intro-avatar'); 
     const textElement = document.getElementById('animated-text');
-    const fullText = "Hello, I'm Gautam Gupta"; // CHANGED: Your personalized greeting
-    const avatarShowDelay = 500; // milliseconds before avatar appears
-    const typingStartDelay = 800; // milliseconds after avatar appears before typing starts
+    const fullText = "Hello, I'm Gautam Gupta"; 
+    const avatarShowDelay = 500; 
+    const typingStartDelay = 800; 
     const typingSpeed = 70; 
     const delayBeforeFade = 1500; 
 
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // NEW: Sequence for avatar and text
+    // Sequence for avatar and text
     setTimeout(() => {
         introAvatar.classList.add('show'); // Show avatar
         setTimeout(() => {
@@ -70,20 +70,121 @@ document.addEventListener('DOMContentLoaded', () => {
     }, avatarShowDelay);
 
 
-    // --- DYNAMIC RESUME MOCKUP LOGIC (RETAINED) ---
-    const resumeLink = document.getElementById('resume-link');
-    const lastUpdatedDate = document.getElementById('last-updated-date');
-    
+    // --- DYNAMIC RESUME LOGIC (MODIFIED FOR MODAL) ---
+    // Modal elements
+    const modal = document.getElementById('resume-modal');
+    const closeBtn = document.getElementsByClassName('close-btn')[0];
+    const resumeLink = document.getElementById('resume-link'); // Original button
+    const modalDownloadBtn = document.getElementById('modal-download-btn'); // Modal download button
+    const resumeIframe = document.getElementById('resume-iframe');
+
+    // MOCK DATA (CRITICAL: Update your actual resume URLs here)
+    const file_ID='1C4vJgM3lFIU386wOOK6331ZIB_OJ-p4b';
     const dynamicResumeData = {
-        fileUrl: 'https://drive.google.com/file/d/11Fo4NJf4bF8u9Xxe0m1bPcryvyCUuKiS/view',
-        updated: 'August 12, 2025', 
+        // This URL is used for the direct download button inside the modal
+       fileUrl:  `https://drive.google.com/uc?export=download&id=${file_ID}`,
+        //fileUrl: 'https://drive.google.com/file/d/1C4vJgM3lFIU386wOOK6331ZIB_OJ-p4b/view?usp=sharing', 
+        
+        // This URL is used to embed the PDF inside the modal iframe
+       // iframeEmbedUrl: 'https://drive.google.com/file/d/1C4vJgM3lFIU386wOOK6331ZIB_OJ-p4b/preview' 
+        iframeEmbedUrl: `https://drive.google.com/file/d/${file_ID}/preview`
     };
 
+    // Initialize the main download button and the modal download button
     resumeLink.href = dynamicResumeData.fileUrl;
-    lastUpdatedDate.textContent = dynamicResumeData.updated;
+    modalDownloadBtn.href = dynamicResumeData.fileUrl;
+
+
+    // 1. OPEN MODAL (Handles click on the main download button)
+    resumeLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Stop the default new tab action
+
+        // Load the PDF into the iframe
+        resumeIframe.src = dynamicResumeData.iframeEmbedUrl;
+        
+        // Show the modal
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+
+    // 2. CLOSE MODAL (Handles click on the 'X' button)
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        resumeIframe.src = ''; // Clear iframe source to stop background processing
+        document.body.style.overflow = 'auto';
+    });
+
+    // 3. CLOSE MODAL (Handles click outside the modal)
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            resumeIframe.src = '';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+
+    // --- PRACTICE INTERVIEW SECTION LOGIC (COMMENTED OUT) ---
+    /*
+    const interviewQuestions = {
+        'selenium': [
+            "What is the difference between findElement() and findElements()?",
+            "Explain the concept of Implicit Wait and Explicit Wait in Selenium.",
+            "How do you handle dynamic web elements (like AJAX calls) in Selenium?",
+            "What are the types of WebDriver Exceptions you commonly encounter?"
+        ],
+        'cypress': [
+            "What is Cypress and how does it differ from Selenium?",
+            "Explain the Cypress Command Queue and how asynchronous commands are handled.",
+            "How do you handle cross-origin navigation or visits in Cypress?",
+            "What is a 'fixture' and how do you use it for data mocking?"
+        ],
+        'api': [
+            "What is the significance of HTTP status codes 200, 201, 400, and 500?",
+            "Explain the difference between PUT and PATCH methods.",
+            "How do you handle token-based authentication (e.g., Bearer Token) in Postman?",
+            "What is API schema validation and why is it important?"
+        ],
+        'ci-cd': [
+            "What is Continuous Integration (CI) and why is it essential for QE?",
+            "How do you trigger automated tests as part of a Jenkins/GitHub Actions pipeline?",
+            "Explain the concept of a 'Quality Gate' in a CI/CD pipeline.",
+            "What is the benefit of containerizing your test environment using Docker?"
+        ]
+    };
+
+    const topicSelect = document.getElementById('topic-select');
+    const questionsContainer = document.getElementById('questions-container');
+
+    topicSelect.addEventListener('change', function() {
+        const selectedTopic = this.value;
+        let htmlContent = '';
+
+        if (selectedTopic === 'default') {
+            questionsContainer.innerHTML = '<p>Select a topic above to load interview questions.</p>';
+            return;
+        }
+
+        const questions = interviewQuestions[selectedTopic];
+        
+        // Loop through the questions and build the HTML content
+        questions.forEach((q, index) => {
+            htmlContent += `
+                <div class="question-item">
+                    <strong>Q${index + 1}:</strong> ${q}
+                </div>
+            `;
+        });
+
+        // Update the container with the generated content
+        questionsContainer.innerHTML = htmlContent;
+    });
+    */
 
 
     // --- CONTACT FORM MOCKUP LOGIC (RETAINED) ---
+    // NOTE: This will give a mock success message. 
+    // You must add your Formspree/Netlify action URL in the HTML for it to work.
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
 
@@ -94,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formStatus.style.color = "#007bff";
 
         setTimeout(() => {
+            // Simulate success
             formStatus.textContent = "Thank you! Your message has been sent successfully.";
             formStatus.style.color = "#28a745"; 
             contactForm.reset(); 
